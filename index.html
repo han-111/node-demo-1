@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>canvas</title>
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    /* canvas设置会有横向纵向滚动条 设置display: block;变成块级  */
+    #canvas {
+        /* 设置宽高是的绘制模糊 拉伸啦 */
+        /* height: 100vh;
+        width: 100vw; */
+        display: block;
+    }
+</style>
+
+<body>
+    <!-- <div id="canvas"></div> -->
+    <canvas id="canvas"></canvas>
+    <script>
+        //canvas画线
+        let documentWidth = document.documentElement.clientWidth
+        let documentHeight = document.documentElement.clientHeight
+        var canvas = document.getElementById("canvas");
+        canvas.width = documentWidth
+        canvas.height = documentHeight
+        var ctx = canvas.getContext("2d");
+        //颜色
+        ctx.fillStyle = "rgb(200,0,0)";
+        ctx.strokeStyle = 'none';
+        let painting = false
+        let last = [];
+        ctx.lineCap = 'round';
+
+
+        let isTouchDevice = 'ontouchstart' in document.documentElement
+        // 画线
+        function draw(x1, y1, x2, y2) {
+            ctx.lineWidth = 10;
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+        }
+
+        /**************************画点*******************************/
+        //手机
+        if (isTouchDevice) {
+            canvas.ontouchstart = (e) => {
+                let x = e.touches[0].clientX
+                let y = e.touches[0].clientY
+                last = [x, y]
+            }
+            canvas.ontouchmove = (e) => {
+                let x = e.touches[0].clientX
+                let y = e.touches[0].clientY
+                // ctx.beginPath()
+                // ctx.arc(x, y, 10, 0, 2 * Math.PI)
+                // ctx.stroke();
+                // ctx.fill();
+                draw(last[0], last[1], x, y)
+                last = [x, y]
+            }
+
+        } else {
+            //平台
+            canvas.onmousedown = (e) => {
+                painting = true;
+                last = [e.clientX, e.clientY]
+
+            }
+            canvas.onmouseup = () => {
+                painting = false
+            }
+            canvas.onmousemove = (e) => {
+                if (painting === true) {
+                    //画矩形（起始坐标，宽，高）
+                    //ctx.fillRect(e.clientX - 5, e.clientY - 5, 10, 10);
+                    //画圆形
+                    // ctx.beginPath()
+                    // ctx.arc(e.clientX - 5, e.clientY - 5, 10, 0, 2 * Math.PI)
+                    // ctx.stroke();
+                    // ctx.fill();
+                    //画线
+                    draw(last[0], last[1], e.clientX, e.clientY)
+                    last = [e.clientX, e.clientY]
+
+                } else {
+                    console.log('什么都不做')
+
+                }
+            }
+        }
+
+
+        //  canvas.onmousemove
+        // canvas.onclick = (e) => {
+        //     console.log(e.clientX)
+        //     console.log(e.clientY)
+        //     let div = document.createElement("div")
+        //     div.style.left = e.clientX + 'px';
+        //     div.style.top = e.clientY + 'px';
+        //     div.style.width = 10 + 'px';
+        //     div.style.height = 10 + 'px';
+        //     div.style.border = '1px solid red';
+        //     div.style.background = 'red';
+        //     div.style.marginLeft = '-5px';
+        //     div.style.marginTop = '-5px';
+        //     div.style.borderRadius = '50%';
+        //     div.style.position = "absolute";
+        //     canvas.appendChild(div)
+        // }
+    </script>
+
+</body>
+
+</html>
